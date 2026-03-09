@@ -3,7 +3,7 @@ import OpenAI from "openai";
 
 export const dynamic = "force-dynamic";
 
-const MODEL = "meta-llama/llama-3.1-8b-instruct:free";
+const MODEL = "meta-llama/llama-3.3-70b-instruct";
 const ITERATIONS = 1;
 const COT_SAMPLES = 2;
 const TOTAL_STEPS = 1 + COT_SAMPLES + 1 + ITERATIONS * 2 + 1; // neural + CoT + consistency + (critique+refine)*iter + synthesis
