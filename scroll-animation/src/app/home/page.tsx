@@ -476,7 +476,7 @@ export default function HomePage() {
                         </div>
                       </details>
                     )}
-                    <div className="whitespace-pre-wrap dash-markdown">{msg.content}</div>
+                    <div className="whitespace-pre-wrap dash-markdown">{msg.content.replace(/\\?\$?\\boxed\{([^}]+)\}\\?\$?/g, '**$1**')}</div>
                   </div>
                   {msg.role === "user" && (
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 dash-avatar-glow">
