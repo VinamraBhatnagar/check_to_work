@@ -22,7 +22,8 @@ try {
   const app = getApp();
   auth = getAuth(app);
   db = getFirestore(app);
-} catch {
+} catch (error) {
+  console.error("Firebase initialization failed:", error);
   auth = {} as Auth;
   db = {} as Firestore;
 }

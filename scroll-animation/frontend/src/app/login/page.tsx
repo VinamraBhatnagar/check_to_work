@@ -26,7 +26,7 @@ export default function LoginPage() {
       router.push("/home");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Sign in failed";
-      setError(msg.replace("Firebase: ", "").replace(/\(auth\/.*\)/, "").trim());
+      setError(msg.replace("Firebase: ", "").replace(/\s*\(auth\/[^)]*\)\.?/, "").trim() || msg);
       setIsSubmitting(false);
     }
   };
@@ -37,7 +37,7 @@ export default function LoginPage() {
       router.push("/home");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "GitHub sign in failed";
-      setError(msg.replace("Firebase: ", "").replace(/\(auth\/.*\)/, "").trim());
+      setError(msg.replace("Firebase: ", "").replace(/\s*\(auth\/[^)]*\)\.?/, "").trim() || msg);
     }
   };
 
@@ -47,7 +47,7 @@ export default function LoginPage() {
       router.push("/home");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Google sign in failed";
-      setError(msg.replace("Firebase: ", "").replace(/\(auth\/.*\)/, "").trim());
+      setError(msg.replace("Firebase: ", "").replace(/\s*\(auth\/[^)]*\)\.?/, "").trim() || msg);
     }
   };
 
