@@ -1,18 +1,37 @@
 "use client";
 
 export default function SettingsPage() {
+  const checks = [
+    ["Authentication", "Firebase email, Google, and GitHub sign-in enabled"],
+    ["Authorization", "Dashboard routes require a signed-in user"],
+    ["Input validation", "Backend validates JSON shape and prompt length"],
+    ["Rate limiting", "Solve and training endpoints limit repeated requests"],
+    ["Security headers", "Backend returns browser hardening headers"],
+  ];
+
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center px-6">
-      <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-4">
-        <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+    <div className="h-full overflow-y-auto bg-[#060a14] px-6 py-8 text-white">
+      <div className="mx-auto max-w-5xl">
+        <p className="text-xs font-semibold uppercase tracking-widest text-sky-400">Controls</p>
+        <h1 className="mt-2 text-2xl font-semibold">Settings</h1>
+        <p className="mt-2 text-sm text-gray-400">Project readiness checks added from the report feedback.</p>
+
+        <div className="mt-8 grid gap-4">
+          {checks.map(([title, description]) => (
+            <div key={title} className="rounded-lg border border-white/[0.06] bg-white/[0.03] p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-medium">{title}</h2>
+                  <p className="mt-1 text-sm text-gray-500">{description}</p>
+                </div>
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
+                  Added
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <h2 className="text-lg font-semibold text-white mb-1">Settings</h2>
-      <p className="text-sm text-gray-500 max-w-sm">
-        Configure your account preferences and application settings. Coming soon.
-      </p>
     </div>
   );
 }

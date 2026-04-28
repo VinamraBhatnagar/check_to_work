@@ -16,8 +16,9 @@ export async function POST(request: NextRequest) {
   });
 
   if (!response.ok || !response.body) {
-    return new Response(JSON.stringify({ error: "Backend unavailable" }), {
-      status: 502,
+    const text = await response.text();
+    return new Response(text || JSON.stringify({ error: "Backend unavailable" }), {
+      status: response.status,
       headers: { "Content-Type": "application/json" },
     });
   }

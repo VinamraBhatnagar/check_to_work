@@ -121,7 +121,11 @@ export default function HomePage() {
   const toggleStep = (id: number) => {
     setExpandedSteps((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   };
@@ -166,15 +170,22 @@ export default function HomePage() {
     setExpandedSteps(new Set());
 
     try {
-      const rawBackendUrl = process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL || process.env.PYTHON_BACKEND_URL || "https://check-to-work-bbzs.onrender.com";
-      const BACKEND_URL = rawBackendUrl.replace(/\/$/, "");
-      const response = await fetch(`${BACKEND_URL}/solve`, {
+      const response = await fetch("/api/solve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: query }),
       });
 
-      if (!response.ok || !response.body) throw new Error("API unavailable");
+      if (!response.ok || !response.body) {
+        let message = "API unavailable";
+        try {
+          const body = await response.json();
+          message = body.detail || body.error || message;
+        } catch {
+          // SSE failures may not include JSON.
+        }
+        throw new Error(message);
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -220,9 +231,12 @@ export default function HomePage() {
         reasoning: steps,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMsg]);
-      saveChat([...messages, userMsg, assistantMsg]);
-    } catch {
+      setMessages((prev) => {
+        const next = [...prev, assistantMsg];
+        saveChat(next);
+        return next;
+      });
+    } catch (err) {
       // Fallback to demo mode if backend is unavailable
       setTotalSteps(DEMO_STEPS.length);
       for (let i = 0; i < DEMO_STEPS.length; i++) {
@@ -240,12 +254,15 @@ export default function HomePage() {
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: DEMO_ANSWERS.default,
+        content: `${DEMO_ANSWERS.default}\n\n_Backend note: ${err instanceof Error ? err.message : "Live backend unavailable, showing demo response."}_`,
         reasoning: finalSteps,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMsg]);
-      saveChat([...messages, userMsg, assistantMsg]);
+      setMessages((prev) => {
+        const next = [...prev, assistantMsg];
+        saveChat(next);
+        return next;
+      });
     } finally {
       setIsGenerating(false);
     }

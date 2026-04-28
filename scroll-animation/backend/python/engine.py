@@ -7,7 +7,7 @@ MODEL = "meta-llama/llama-3.3-70b-instruct"
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ.get("OPENROUTER_API_KEY"),
+    api_key=os.environ.get("OPENROUTER_API_KEY") or "missing-openrouter-key",
 )
 
 
@@ -28,6 +28,8 @@ class Logger:
 
 
 def ask_llm(prompt):
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        return "MODEL_ERROR: OPENROUTER_API_KEY is not configured."
     try:
         response = client.chat.completions.create(
             model=MODEL,

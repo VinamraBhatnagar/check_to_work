@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -56,6 +56,30 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: "Metrics",
+    href: "/home/metrics",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M3 3v18h18M7 15l3-3 3 2 5-7"
+      />
+    ),
+  },
+  {
+    label: "Training",
+    href: "/home/training",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M12 6v6l4 2m4-2a8 8 0 11-16 0 8 8 0 0116 0z"
+      />
+    ),
+  },
+  {
     label: "API Keys",
     href: "/home/api-keys",
     icon: (
@@ -95,10 +119,6 @@ export default function Sidebar() {
   const { user, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
   return (
     <aside
       className={`dash-sidebar relative flex flex-col h-screen bg-[#0a0e1a] border-r border-white/[0.06] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -152,7 +172,7 @@ export default function Sidebar() {
                   : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
               }`}
               style={{
-                animationDelay: mounted ? `${i * 50}ms` : "0ms",
+                animationDelay: `${i * 50}ms`,
               }}
             >
               {/* Active indicator */}
