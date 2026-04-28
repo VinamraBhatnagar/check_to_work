@@ -20,33 +20,6 @@ interface Message {
   timestamp: Date;
 }
 
-/* ═══════════════ demo reasoning generator ═══════════════ */
-const DEMO_STEPS: Omit<ReasoningStep, "id">[] = [
-  { label: "Parsing query", content: "Breaking down user intent and identifying key concepts…", status: "done" },
-  { label: "Chain-of-Thought #1", content: "Generating initial reasoning path using zero-shot prompting…", status: "done" },
-  { label: "Chain-of-Thought #2", content: "Sampling alternative reasoning path for cross-verification…", status: "done" },
-  { label: "Chain-of-Thought #3", content: "Generating third independent chain for consensus scoring…", status: "done" },
-  { label: "Consistency check", content: "Comparing 3 reasoning paths — paths #1 and #3 agree, path #2 diverges on step 4…", status: "done" },
-  { label: "Self-correction", content: "Detected inconsistency in path #2. Revising step 4 using consensus from paths #1 & #3…", status: "corrected" },
-  { label: "Final synthesis", content: "Merging corrected reasoning chains into a coherent, verified answer…", status: "done" },
-];
-
-const DEMO_ANSWERS: Record<string, string> = {
-  default: `Based on multi-path consistency verification, here's the synthesized answer:
-
-**Self-Correcting Reasoning** works by sampling multiple independent Chain-of-Thought paths for a given query, then cross-checking them for internal consistency.
-
-### Key steps:
-1. **Multi-path sampling** — Generate 3+ reasoning chains independently
-2. **Consistency scoring** — Compare answers across chains
-3. **Self-correction** — When inconsistencies are found, revise divergent paths using consensus
-4. **Synthesis** — Merge the corrected chains into a final verified answer
-
-The model detected that reasoning path #2 diverged at step 4, and automatically corrected it using the consensus from paths #1 and #3. No external supervision was needed.
-
-> Confidence: **94.2%** — High cross-path agreement after self-correction.`,
-};
-
 /* ══════════════════ suggestion cards ══════════════════ */
 const SUGGESTIONS = [
   { icon: "🧠", text: "Explain self-correcting reasoning", desc: "How does it work?", gradient: "from-purple-500/20 to-sky-500/20" },
@@ -237,25 +210,11 @@ export default function HomePage() {
         return next;
       });
     } catch (err) {
-      // Fallback to demo mode if backend is unavailable
-      setTotalSteps(DEMO_STEPS.length);
-      for (let i = 0; i < DEMO_STEPS.length; i++) {
-        await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
-        setActiveReasoning((prev) => [
-          ...prev.map((s) => ({ ...s, status: "done" as const })),
-          { ...DEMO_STEPS[i], id: i, status: "running" as const },
-        ]);
-      }
-
-      await new Promise((r) => setTimeout(r, 500));
-      const finalSteps = DEMO_STEPS.map((s, i) => ({ ...s, id: i }));
-      setActiveReasoning(finalSteps);
-
+      setActiveReasoning([]);
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `${DEMO_ANSWERS.default}\n\n_Backend note: ${err instanceof Error ? err.message : "Live backend unavailable, showing demo response."}_`,
-        reasoning: finalSteps,
+        content: `Live backend unavailable: ${err instanceof Error ? err.message : "Unable to reach the reasoning service."}`,
         timestamp: new Date(),
       };
       setMessages((prev) => {
