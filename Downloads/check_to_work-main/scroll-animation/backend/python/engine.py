@@ -2,6 +2,9 @@ import os
 import random
 from collections import Counter
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 MODEL = "meta-llama/llama-3.3-70b-instruct"
 
