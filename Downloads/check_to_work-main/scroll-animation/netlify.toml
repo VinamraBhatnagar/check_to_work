@@ -1,0 +1,10 @@
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Set Firebase and backend environment variables in the Netlify dashboard.
+# Do not commit project credentials or deployment secrets here.
